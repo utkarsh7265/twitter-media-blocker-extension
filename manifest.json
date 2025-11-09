@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Twitter Media Blocker",
+  "version": "1.0",
+  "description": "Remove images and videos from twitter.com (desktop). Toggle images/videos separately.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://x.com/*",
+    "*://www.x.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Twitter Media Blocker"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://x.com/*", "*://www.x.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

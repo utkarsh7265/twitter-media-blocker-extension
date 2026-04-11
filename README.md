@@ -1,7 +1,12 @@
 # twitter-media-blocker-extension
 
+![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/lefnkfngfacicegokkakkbflpbklnipk?style=for-the-badge&logo=googlechrome&logoColor=white&label=Users&color=4285F4)
+![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/lefnkfngfacicegokkakkbflpbklnipk?style=for-the-badge&logo=googlechrome&logoColor=white&label=Version&color=34A853)
+
 A simple browser extension that hides images and videos on Twitter (X) so you can scroll without distractions.  
 It’s lightweight, private, and helps you focus on what people actually write.
+
+[**✅ Install from Chrome Web Store**](https://chromewebstore.google.com/detail/twitter-media-blocker/lefnkfngfacicegokkakkbflpbklnipk)
 
 ---
 

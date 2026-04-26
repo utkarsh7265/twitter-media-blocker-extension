@@ -1,25 +1,39 @@
-const blockImagesEl = document.getElementById('blockImages');
-const blockVideosEl = document.getElementById('blockVideos');
-const applyBtn = document.getElementById('apply');
+// Popup controller — instant toggles, no page reload needed
+
+const DEFAULTS = { blockImages: true, blockVideos: true, blurMode: false, blockTrending: false };
+
+const els = {
+  blockImages: document.getElementById('blockImages'),
+  blockVideos: document.getElementById('blockVideos'),
+  blurMode: document.getElementById('blurMode'),
+  blockTrending: document.getElementById('blockTrending')
+};
 
 function loadUI() {
-  chrome.storage.sync.get({ blockImages: true, blockVideos: true }, (items) => {
-    blockImagesEl.checked = items.blockImages;
-    blockVideosEl.checked = items.blockVideos;
+  chrome.storage.sync.get(DEFAULTS, (items) => {
+    els.blockImages.checked = items.blockImages;
+    els.blockVideos.checked = items.blockVideos;
+    els.blurMode.checked = items.blurMode;
+    els.blockTrending.checked = items.blockTrending;
   });
 }
 
-applyBtn.addEventListener('click', () => {
-  const newSettings = { blockImages: blockImagesEl.checked, blockVideos: blockVideosEl.checked };
-  chrome.storage.sync.set(newSettings, () => {
-    // Try to reload active tab so content script re-runs
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs && tabs[0]) {
-        chrome.tabs.reload(tabs[0].id);
+// Each toggle writes its setting instantly — the content script reacts via storage.onChanged
+Object.keys(els).forEach(key => {
+  els[key].addEventListener('change', () => {
+    chrome.storage.sync.set({ [key]: els[key].checked });
+  });
+});
+
+// Keep UI in sync if settings change externally (e.g. via Alt+M shortcut)
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'sync') {
+    Object.keys(els).forEach(key => {
+      if (key in changes) {
+        els[key].checked = changes[key].newValue;
       }
     });
-    window.close();
-  });
+  }
 });
 
 loadUI();

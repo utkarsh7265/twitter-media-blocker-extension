@@ -5,18 +5,122 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Twitter Media Blocker</title>
     <style>
-      body { font-family: Arial, sans-serif; width:220px; padding:12px; }
-      label { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-      .hint { font-size:12px; color:#666; margin-top:8px }
-      button { margin-top:8px; width:100%; padding:8px }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        width: 260px;
+        padding: 16px;
+        background: #15202b;
+        color: #e7e9ea;
+      }
+      h3 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 14px;
+        color: #ffffff;
+        letter-spacing: 0.2px;
+      }
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #8899a6;
+        margin-bottom: 8px;
+      }
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+      }
+      .toggle-row span {
+        font-size: 13px;
+        color: #d9d9d9;
+      }
+
+      /* Toggle switch */
+      .switch {
+        position: relative;
+        width: 40px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+      .switch input { opacity: 0; width: 0; height: 0; }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: #38444d;
+        border-radius: 22px;
+        transition: background 0.25s ease;
+      }
+      .slider::before {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        left: 3px;
+        bottom: 3px;
+        background: #e7e9ea;
+        border-radius: 50%;
+        transition: transform 0.25s ease;
+      }
+      .switch input:checked + .slider {
+        background: #1d9bf0;
+      }
+      .switch input:checked + .slider::before {
+        transform: translateX(18px);
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid #38444d;
+        margin: 10px 0;
+      }
+      .shortcut-hint {
+        font-size: 11px;
+        color: #8899a6;
+        margin-top: 12px;
+        text-align: center;
+      }
+      .shortcut-hint kbd {
+        background: #38444d;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 11px;
+        color: #d9d9d9;
+      }
     </style>
   </head>
   <body>
     <h3>Twitter Media Blocker</h3>
-    <label><input id="blockImages" type="checkbox"> Block images</label>
-    <label><input id="blockVideos" type="checkbox"> Block videos</label>
-    <button id="apply">Apply to current tab</button>
-    <div class="hint">Toggle and press apply. The page may reload.</div>
+
+    <div class="section-label">Media</div>
+    <div class="toggle-row">
+      <span>Block images</span>
+      <label class="switch"><input id="blockImages" type="checkbox"><span class="slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <span>Block videos</span>
+      <label class="switch"><input id="blockVideos" type="checkbox"><span class="slider"></span></label>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-label">Options</div>
+    <div class="toggle-row">
+      <span>Blur mode</span>
+      <label class="switch"><input id="blurMode" type="checkbox"><span class="slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <span>Hide trending</span>
+      <label class="switch"><input id="blockTrending" type="checkbox"><span class="slider"></span></label>
+    </div>
+
+    <div class="shortcut-hint"><kbd>Alt+M</kbd> to quick toggle</div>
+
     <script src="popup.js"></script>
   </body>
 </html>

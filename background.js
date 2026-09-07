@@ -1,6 +1,9 @@
 // Background service worker — handles keyboard shortcut (Alt+M)
 
-const DEFAULTS = { blockImages: true, blockVideos: true, blurMode: false, blockTrending: false };
+const DEFAULTS = {
+  blockImages: true, blockVideos: true, blurMode: false, blockTrending: false,
+  keepAvatars: false, clickReveal: false, blockCards: false
+};
 
 chrome.commands.onCommand.addListener((command) => {
   if (command === 'toggle-all-blocking') {

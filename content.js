@@ -1,7 +1,11 @@
-// Twitter Media Blocker v1.1.0
-// Features: block/blur images & videos, hide trending sidebar, Alt+M shortcut
+// Twitter Media Blocker v1.2.0
+// Features: block/blur images & videos, keep avatars, click-to-reveal,
+// hide link cards, hide trending sidebar, Alt+M shortcut
 
-const DEFAULTS = { blockImages: true, blockVideos: true, blurMode: false, blockTrending: false };
+const DEFAULTS = {
+  blockImages: true, blockVideos: true, blurMode: false, blockTrending: false,
+  keepAvatars: false, clickReveal: false, blockCards: false
+};
 let settings = { ...DEFAULTS };
 
 function loadSettings() {
@@ -59,7 +63,7 @@ function injectSafeCss() {
       transition: filter 0.3s ease !important;
       pointer-events: auto !important;
     }
-    body.tm-blocker-blur-mode.tm-blocker-hide-images img:hover,
+    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) img:hover,
     body.tm-blocker-blur-mode.tm-blocker-hide-images picture:hover,
     body.tm-blocker-blur-mode.tm-blocker-hide-images figure:hover {
       filter: none !important;
@@ -72,8 +76,8 @@ function injectSafeCss() {
       transition: filter 0.3s ease !important;
       pointer-events: auto !important;
     }
-    body.tm-blocker-blur-mode.tm-blocker-hide-videos video:hover,
-    body.tm-blocker-blur-mode.tm-blocker-hide-videos iframe:hover {
+    body.tm-blocker-blur-mode.tm-blocker-hide-videos:not(.tm-blocker-click-reveal) video:hover,
+    body.tm-blocker-blur-mode.tm-blocker-hide-videos:not(.tm-blocker-click-reveal) iframe:hover {
       filter: none !important;
     }
 
@@ -97,6 +101,55 @@ function injectSafeCss() {
     /* Hide the "What's happening" and "Who to follow" section containers */
     body.tm-blocker-hide-trending [data-testid="sidebarColumn"] [aria-label="Timeline: Trending now"],
     body.tm-blocker-hide-trending [data-testid="sidebarColumn"] [aria-label="Who to follow"] {
+      display: none !important;
+    }
+
+    /* In click-reveal mode only leaf media is blurred, so pinning one image
+       isn't undone by a blurred ancestor. */
+    body.tm-blocker-blur-mode.tm-blocker-hide-images.tm-blocker-click-reveal picture,
+    body.tm-blocker-blur-mode.tm-blocker-hide-images.tm-blocker-click-reveal figure {
+      filter: none !important;
+    }
+
+    /* ===== CLICK TO REVEAL =====
+       visibility:hidden takes an element out of hit-testing, so in click-reveal
+       mode media is blanked with opacity alone and stays clickable. */
+
+    body.tm-blocker-click-reveal.tm-blocker-hide-images:not(.tm-blocker-blur-mode) img {
+      visibility: visible !important;
+      opacity: 0 !important;
+      pointer-events: auto !important;
+    }
+    body.tm-blocker-click-reveal.tm-blocker-hide-images:not(.tm-blocker-blur-mode) picture,
+    body.tm-blocker-click-reveal.tm-blocker-hide-images:not(.tm-blocker-blur-mode) figure {
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+    body.tm-blocker-click-reveal.tm-blocker-hide-videos:not(.tm-blocker-blur-mode) video,
+    body.tm-blocker-click-reveal.tm-blocker-hide-videos:not(.tm-blocker-blur-mode) iframe {
+      visibility: visible !important;
+      opacity: 0 !important;
+      pointer-events: auto !important;
+    }
+
+    /* ===== KEEP AVATARS =====
+       Must stay after the hide/blur/click-reveal blocks: same specificity,
+       later rule wins. */
+
+    body.tm-blocker-keep-avatars.tm-blocker-hide-images [data-testid="Tweet-User-Avatar"],
+    body.tm-blocker-keep-avatars.tm-blocker-hide-images [data-testid="Tweet-User-Avatar"] img,
+    body.tm-blocker-keep-avatars.tm-blocker-hide-images [data-testid^="UserAvatar-Container-"],
+    body.tm-blocker-keep-avatars.tm-blocker-hide-images [data-testid^="UserAvatar-Container-"] img {
+      visibility: visible !important;
+      opacity: 1 !important;
+      filter: none !important;
+      pointer-events: auto !important;
+    }
+
+    /* ===== LINK PREVIEW CARDS ===== */
+    /* Polls render as card.wrapper too — keep those. */
+    body.tm-blocker-hide-cards [data-testid="card.wrapper"]:not(:has([data-testid="cardPoll"])) {
       display: none !important;
     }
 
@@ -221,36 +274,50 @@ function enqueueNode(node) {
   if (pending.size) scheduleProcessing();
 }
 
-// Restore stripped video/iframe sources so they can play again
+// Restore stripped sources on one element so it can play again.
+// Returns true if anything was actually restored.
+function restoreVideoEl(el) {
+  let changed = false;
+  try {
+    if (el.dataset.tmOrigSrc) {
+      el.src = el.dataset.tmOrigSrc;
+      delete el.dataset.tmOrigSrc;
+      changed = true;
+    }
+    if (el.tagName.toLowerCase() === 'video') {
+      el.querySelectorAll('source[data-tm-orig-src]').forEach(sc => {
+        try { sc.src = sc.dataset.tmOrigSrc; delete sc.dataset.tmOrigSrc; changed = true; } catch (e) {}
+      });
+      if (el.dataset.tmOrigPoster) {
+        el.poster = el.dataset.tmOrigPoster;
+        delete el.dataset.tmOrigPoster;
+        changed = true;
+      }
+      if (changed) el.load();
+    }
+  } catch (e) {}
+  return changed;
+}
+
+// Restore every stripped video/iframe (used when video blocking is turned off)
 function restoreVideos() {
   try {
-    document.querySelectorAll('video[data-tm-orig-src]').forEach(v => {
-      try {
-        v.src = v.dataset.tmOrigSrc;
-        delete v.dataset.tmOrigSrc;
-      } catch(e) {}
-      // Restore <source> children
-      v.querySelectorAll('source[data-tm-orig-src]').forEach(s => {
-        try { s.src = s.dataset.tmOrigSrc; delete s.dataset.tmOrigSrc; } catch(e) {}
-      });
-      // Restore poster
-      if (v.dataset.tmOrigPoster) {
-        v.poster = v.dataset.tmOrigPoster;
-        delete v.dataset.tmOrigPoster;
-      }
-      try { v.load(); } catch(e) {}
-    });
-    document.querySelectorAll('iframe[data-tm-orig-src]').forEach(f => {
-      try {
-        f.src = f.dataset.tmOrigSrc;
-        delete f.dataset.tmOrigSrc;
-      } catch(e) {}
-    });
-    // Allow these elements to be re-processed if blocking is turned on again
-    processed.delete && document.querySelectorAll('video, iframe').forEach(el => {
+    document.querySelectorAll('video, iframe').forEach(el => {
+      restoreVideoEl(el);
+      // allow re-processing if blocking is turned back on
       processed.delete(el);
     });
-  } catch(e) {}
+  } catch (e) {}
+}
+
+// Drop reveals when click-to-reveal is switched off, so nothing stays visible
+function clearReveals() {
+  document.querySelectorAll('[data-tm-revealed]').forEach(el => {
+    el.style.removeProperty('visibility');
+    el.style.removeProperty('opacity');
+    el.style.removeProperty('filter');
+    delete el.dataset.tmRevealed;
+  });
 }
 
 // Apply all body classes based on current settings
@@ -259,6 +326,9 @@ function applyBodyClasses() {
   document.body.classList.toggle('tm-blocker-hide-videos', !!settings.blockVideos);
   document.body.classList.toggle('tm-blocker-blur-mode', !!settings.blurMode);
   document.body.classList.toggle('tm-blocker-hide-trending', !!settings.blockTrending);
+  document.body.classList.toggle('tm-blocker-keep-avatars', !!settings.keepAvatars);
+  document.body.classList.toggle('tm-blocker-click-reveal', !!settings.clickReveal);
+  document.body.classList.toggle('tm-blocker-hide-cards', !!settings.blockCards);
 }
 
 async function init() {
@@ -288,25 +358,37 @@ async function init() {
   });
   mo.observe(document, { childList: true, subtree: true });
 
+  // Click-to-reveal: one click permanently reveals a single item without
+  // disabling blocking. Works in hide mode (blanked -> shown) and blur mode
+  // (blurred -> pinned sharp); in blur mode it replaces hover-peek, so the
+  // toggle never sits there doing nothing.
+  document.addEventListener('click', e => {
+    if (!settings.clickReveal) return;
+    const el = e.target && e.target.closest && e.target.closest('img, video, iframe');
+    if (!el || el.dataset.tmRevealed) return;
+    // Only intercept media the CSS is actually blocking — leaves avatars and
+    // anything else already visible alone, so their clicks reach X untouched.
+    const cs = getComputedStyle(el);
+    if (cs.opacity !== '0' && !cs.filter.includes('blur')) return;
+    el.dataset.tmRevealed = '1';
+    el.style.setProperty('visibility', 'visible', 'important');
+    el.style.setProperty('opacity', '1', 'important');
+    el.style.setProperty('filter', 'none', 'important');
+    if (el.tagName.toLowerCase() !== 'img') restoreVideoEl(el);
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
   // Storage changes toggle CSS classes — avoids page reloads and heavy DOM work
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync') {
-      if ('blockImages' in changes) {
-        settings.blockImages = changes.blockImages.newValue;
-      }
-      if ('blockVideos' in changes) {
-        settings.blockVideos = changes.blockVideos.newValue;
-        // Restore stripped sources when video blocking is turned off
-        if (!settings.blockVideos) restoreVideos();
-      }
-      if ('blurMode' in changes) {
-        settings.blurMode = changes.blurMode.newValue;
-      }
-      if ('blockTrending' in changes) {
-        settings.blockTrending = changes.blockTrending.newValue;
-      }
-      applyBodyClasses();
+    if (area !== 'sync') return;
+    for (const key in changes) {
+      if (key in settings) settings[key] = changes[key].newValue;
     }
+    // Restore stripped sources when video blocking is turned off
+    if ('blockVideos' in changes && !settings.blockVideos) restoreVideos();
+    if ('clickReveal' in changes && !settings.clickReveal) clearReveals();
+    applyBodyClasses();
   });
 }
 

@@ -12,8 +12,13 @@ It’s lightweight, private, and helps you focus on what people actually write.
 
 ## What it does
 
-- Hides all images and videos on twitter.com  
+- Hides all images and videos on x.com and twitter.com  
 - Lets you toggle images or videos separately  
+- Blur mode — blur media instead of hiding it, hover to peek  
+- Keep avatars — profile pictures stay visible so you can still tell tweets apart  
+- Click to reveal — reveal a single image for good without turning blocking off  
+- Hides link preview cards and the trending sidebar  
+- `Alt+M` to toggle everything on or off  
 - Runs fast and doesn’t collect any data  
 - Works entirely in your browser (no servers, no tracking)  
 - Great if you want a cleaner, text-only Twitter experience
@@ -27,7 +32,7 @@ It’s lightweight, private, and helps you focus on what people actually write.
 2. Open `chrome://extensions` in Chrome.  
 3. Turn on **Developer mode** (top right corner).  
 4. Click **Load unpacked** and choose the folder.  
-5. Visit twitter.com and try it out.
+5. Visit x.com and try it out.
 
 ---
 
@@ -50,5 +55,8 @@ To work on it locally:
 git clone https://github.com/yourusername/twitter-media-blocker.git
 cd twitter-media-blocker
 ```
+
+Open `test.html` in a browser after touching the CSS in `content.js` — every row must say PASS.
+
 ---
 

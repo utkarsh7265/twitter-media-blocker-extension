@@ -1,0 +1,81 @@
+<!doctype html>
+<!-- Cascade check for content.js. Open in a browser; all rows must say PASS.
+     Loads the real content.js with a chrome stub, so the CSS under test is the shipped CSS. -->
+<meta charset="utf-8">
+<title>tm-blocker cascade check</title>
+<style>body{font:13px monospace} .PASS{color:#0a0} .FAIL{color:#c00;font-weight:700}</style>
+
+<div id="feed">
+  <img id="feedImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
+  <div data-testid="Tweet-User-Avatar"><img id="avatarImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></div>
+  <figure id="wrapFig"><img id="wrappedImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></figure>
+  <div id="linkCard" data-testid="card.wrapper">link preview</div>
+  <div id="pollCard" data-testid="card.wrapper"><div data-testid="cardPoll">poll</div></div>
+</div>
+<pre id="out"></pre>
+
+<script>
+window.chrome = {
+  storage: { sync: { get: (d, cb) => cb(d) }, onChanged: { addListener() {} } }
+};
+</script>
+<script src="content.js"></script>
+<script>
+const out = document.getElementById('out');
+let failed = 0;
+const css = (id, prop) => getComputedStyle(document.getElementById(id))[prop];
+
+function check(name, actual, expected) {
+  const ok = expected instanceof RegExp ? expected.test(actual) : actual === expected;
+  if (!ok) failed++;
+  out.innerHTML += `<span class="${ok ? 'PASS' : 'FAIL'}">${ok ? 'PASS' : 'FAIL'}</span>  ${name}` +
+                   (ok ? '' : `  (got "${actual}", want "${expected}")`) + '\n';
+}
+
+function classes(...list) {
+  document.body.className = list.join(' ');
+}
+
+addEventListener('load', () => setTimeout(() => {
+  classes('tm-blocker-hide-images', 'tm-blocker-hide-videos');
+  check('hide mode blanks feed images', css('feedImg', 'visibility'), 'hidden');
+  check('hide mode blanks avatars too', css('avatarImg', 'visibility'), 'hidden');
+
+  classes('tm-blocker-hide-images', 'tm-blocker-keep-avatars');
+  check('keep-avatars beats hide rule', css('avatarImg', 'visibility'), 'visible');
+  check('keep-avatars leaves feed images hidden', css('feedImg', 'visibility'), 'hidden');
+
+  classes('tm-blocker-hide-images', 'tm-blocker-blur-mode', 'tm-blocker-keep-avatars');
+  check('blur mode blurs feed images', css('feedImg', 'filter'), /blur/);
+  check('keep-avatars beats blur rule', css('avatarImg', 'filter'), 'none');
+
+  classes('tm-blocker-hide-images', 'tm-blocker-click-reveal');
+  check('click-reveal keeps images hit-testable', css('feedImg', 'pointerEvents'), 'auto');
+  check('click-reveal blanks via opacity', css('feedImg', 'opacity'), '0');
+  check('click-reveal does not use visibility', css('feedImg', 'visibility'), 'visible');
+
+  classes('tm-blocker-hide-images', 'tm-blocker-click-reveal', 'tm-blocker-keep-avatars');
+  check('click-reveal keeps avatars shown', css('avatarImg', 'opacity'), '1');
+
+  // Blur mode + click-to-reveal: hover-peek is off, clicking pins instead.
+  classes('tm-blocker-hide-images', 'tm-blocker-blur-mode', 'tm-blocker-click-reveal');
+  check('blur + click-reveal still blurs images', css('feedImg', 'filter'), /blur/);
+  check('blur + click-reveal unblurs containers', css('wrapFig', 'filter'), 'none');
+  check('so a wrapped image is blurred once, not twice', css('wrappedImg', 'filter'), /^blur\([^)]*\)$/);
+
+  // What the click handler does — inline !important must beat the blur rule
+  const pinned = document.getElementById('feedImg');
+  ['visibility:visible', 'opacity:1', 'filter:none'].forEach(d => {
+    const [k, v] = d.split(':');
+    pinned.style.setProperty(k, v, 'important');
+  });
+  check('pinning beats the blur rule', css('feedImg', 'filter'), 'none');
+  pinned.removeAttribute('style');
+
+  classes('tm-blocker-hide-cards');
+  check('hides link preview cards', css('linkCard', 'display'), 'none');
+  check('keeps polls', css('pollCard', 'display'), /^(?!none)/);
+
+  out.innerHTML += failed ? `\n${failed} FAILED\n` : '\nall passed\n';
+}, 0));
+</script>

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Twitter Media Blocker",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Hide or blur images and videos on X/Twitter. Block trending sidebar. Toggle with Alt+M.",
   "icons": {
     "16": "icons/icon16.png",
@@ -11,7 +11,10 @@
   "permissions": ["storage"],
   "host_permissions": [
     "*://x.com/*",
-    "*://www.x.com/*"
+    "*://www.x.com/*",
+    "*://twitter.com/*",
+    "*://www.twitter.com/*",
+    "*://mobile.twitter.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -30,7 +33,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://x.com/*", "*://www.x.com/*"],
+      "matches": [
+        "*://x.com/*",
+        "*://www.x.com/*",
+        "*://twitter.com/*",
+        "*://www.twitter.com/*",
+        "*://mobile.twitter.com/*"
+      ],
       "js": ["content.js"],
       "run_at": "document_idle"
     }

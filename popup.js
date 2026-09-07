@@ -1,20 +1,23 @@
 // Popup controller — instant toggles, no page reload needed
 
-const DEFAULTS = { blockImages: true, blockVideos: true, blurMode: false, blockTrending: false };
+const DEFAULTS = {
+  blockImages: true, blockVideos: true, blurMode: false, blockTrending: false,
+  keepAvatars: false, clickReveal: false, blockCards: false
+};
 
 const els = {
   blockImages: document.getElementById('blockImages'),
   blockVideos: document.getElementById('blockVideos'),
   blurMode: document.getElementById('blurMode'),
-  blockTrending: document.getElementById('blockTrending')
+  blockTrending: document.getElementById('blockTrending'),
+  keepAvatars: document.getElementById('keepAvatars'),
+  clickReveal: document.getElementById('clickReveal'),
+  blockCards: document.getElementById('blockCards')
 };
 
 function loadUI() {
   chrome.storage.sync.get(DEFAULTS, (items) => {
-    els.blockImages.checked = items.blockImages;
-    els.blockVideos.checked = items.blockVideos;
-    els.blurMode.checked = items.blurMode;
-    els.blockTrending.checked = items.blockTrending;
+    Object.keys(els).forEach(key => { els[key].checked = !!items[key]; });
   });
 }
 

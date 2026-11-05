@@ -36,6 +36,13 @@ It’s lightweight, private, and helps you focus on what people actually write.
 4. Click **Load unpacked** and choose the folder.  
 5. Visit x.com and try it out.
 
+### Firefox (temporary add-on)
+Requires Firefox 140 or later.
+1. Download or clone this repository.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on** and pick `manifest.json` in the folder.
+4. Visit x.com and try it out. Firefox removes temporary add-ons when it restarts.
+
 ---
 
 ## How it works

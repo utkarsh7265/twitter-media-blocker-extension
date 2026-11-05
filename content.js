@@ -87,7 +87,10 @@ function injectSafeCss() {
       transition: filter 0.3s ease !important;
       pointer-events: auto !important;
     }
-    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) [style*="background-image"]:hover {
+    /* X paints photos as a background-image div under a transparent <img>,
+       so the hover lands on the <img> sibling, not the div. */
+    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) [style*="background-image"]:hover,
+    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) :has(> img:hover) > [style*="background-image"] {
       filter: none !important;
     }
 

@@ -8,7 +8,7 @@ Thanks for helping out! Bug reports, fixes and small features are all welcome.
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick the repo folder.
 3. Open x.com. After editing, hit the reload icon on the extension card and refresh the tab.
 
-No build step — it's plain JS, HTML and CSS.
+No build step — it’s plain JS, HTML and CSS. Node is only needed for linting and tests.
 
 ## How it's put together
 
@@ -27,7 +27,10 @@ Settings defaults live in three places (`content.js`, `popup.js`, `background.js
 
 ## Before opening a PR
 
-- If you touched the CSS, open `test.html` in a browser. Every row must say **PASS**. Add a row for new behaviour where you can.
+- Run `npm install` once, then `npx playwright install chromium`.
+- Run `npm run lint` and `npm test`. `npm test` opens `test.html` in headless Chromium and fails if any row says **FAIL**. CI runs both on every push and PR.
+- If you touched the CSS, add a row to `test.html` for the new behaviour where you can.
+- `npm run format` applies the Prettier style (2 spaces, single quotes, semicolons).
 - Test on x.com with the relevant toggles on and off.
 - Keep PRs small and focused, and link the issue they fix.
 

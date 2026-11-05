@@ -225,7 +225,7 @@ function processMedia(node) {
       node.pause && node.pause();
       try { if (node.src && !node.dataset.tmOrigSrc) node.dataset.tmOrigSrc = node.src; } catch(e) {}
       const sources = node.querySelectorAll('source');
-      Array.from(sources).forEach((s, i) => {
+      Array.from(sources).forEach(s => {
         try { if (s.src && !s.dataset.tmOrigSrc) s.dataset.tmOrigSrc = s.src; s.src = ''; } catch(e){}
       });
       try { if (node.src) node.src = ''; } catch (e) {}

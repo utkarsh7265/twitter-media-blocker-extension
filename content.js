@@ -64,8 +64,8 @@ function injectSafeCss() {
       pointer-events: auto !important;
     }
     body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) img:hover,
-    body.tm-blocker-blur-mode.tm-blocker-hide-images picture:hover,
-    body.tm-blocker-blur-mode.tm-blocker-hide-images figure:hover {
+    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) picture:hover,
+    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) figure:hover {
       filter: none !important;
     }
 
@@ -87,7 +87,7 @@ function injectSafeCss() {
       transition: filter 0.3s ease !important;
       pointer-events: auto !important;
     }
-    body.tm-blocker-blur-mode.tm-blocker-hide-images [style*="background-image"]:hover {
+    body.tm-blocker-blur-mode.tm-blocker-hide-images:not(.tm-blocker-click-reveal) [style*="background-image"]:hover {
       filter: none !important;
     }
 

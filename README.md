@@ -52,11 +52,16 @@ Everything happens locally, in your own browser.
 To work on it locally:
 
 ```bash
-git clone https://github.com/yourusername/twitter-media-blocker.git
-cd twitter-media-blocker
+git clone https://github.com/utkarsh7265/twitter-media-blocker-extension.git
+cd twitter-media-blocker-extension
 ```
 
 Open `test.html` in a browser after touching the CSS in `content.js` — every row must say PASS.
 
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ---
 
+## License
+
+[MIT](LICENSE)

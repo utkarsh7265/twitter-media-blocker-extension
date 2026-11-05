@@ -1,4 +1,4 @@
-// Twitter Media Blocker v1.2.0
+// Twitter Media Blocker v1.2.1
 // Features: block/blur images & videos, keep avatars, click-to-reveal,
 // hide link cards, hide trending sidebar, Alt+M shortcut
 

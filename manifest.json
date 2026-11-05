@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Twitter Media Blocker",
+  "name": "__MSG_extName__",
   "version": "1.2.1",
-  "description": "Hide or blur images and videos on X/Twitter. Block trending sidebar. Toggle with Alt+M.",
+  "default_locale": "en",
+  "description": "__MSG_extDescription__",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "*://x.com/*",
     "*://www.x.com/*",
@@ -21,14 +24,17 @@
     "default_title": "Twitter Media Blocker"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "scripts": [
+      "background.js"
+    ]
   },
   "commands": {
     "toggle-all-blocking": {
       "suggested_key": {
         "default": "Alt+M"
       },
-      "description": "Toggle all media blocking on/off"
+      "description": "__MSG_commandToggleAll__"
     }
   },
   "content_scripts": [
@@ -40,8 +46,24 @@
         "*://www.twitter.com/*",
         "*://mobile.twitter.com/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "twitter-media-blocker@utkarsh7265",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
+    }
+  }
 }

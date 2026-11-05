@@ -1,0 +1,38 @@
+{
+  "extDescription": {
+    "message": "Oculta o difumina imágenes y vídeos en X/Twitter. Bloquea la barra de tendencias. Actívalo o desactívalo con Alt+M."
+  },
+  "commandToggleAll": {
+    "message": "Activar o desactivar todo el bloqueo de multimedia"
+  },
+  "sectionMedia": {
+    "message": "Multimedia"
+  },
+  "blockImages": {
+    "message": "Bloquear imágenes"
+  },
+  "blockVideos": {
+    "message": "Bloquear vídeos"
+  },
+  "keepAvatars": {
+    "message": "Mantener avatares"
+  },
+  "sectionOptions": {
+    "message": "Opciones"
+  },
+  "blurMode": {
+    "message": "Modo difuminado"
+  },
+  "clickReveal": {
+    "message": "Clic para mostrar"
+  },
+  "blockCards": {
+    "message": "Ocultar tarjetas de enlace"
+  },
+  "blockTrending": {
+    "message": "Ocultar tendencias"
+  },
+  "shortcutHint": {
+    "message": "Alt+M para alternar rápido"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "Twitter Media Blocker"
+  },
+  "extDescription": {
+    "message": "Hide or blur images and videos on X/Twitter. Block trending sidebar. Toggle with Alt+M."
+  },
+  "commandToggleAll": {
+    "message": "Toggle all media blocking on/off"
+  },
+  "sectionMedia": {
+    "message": "Media"
+  },
+  "blockImages": {
+    "message": "Block images"
+  },
+  "blockVideos": {
+    "message": "Block videos"
+  },
+  "keepAvatars": {
+    "message": "Keep avatars"
+  },
+  "sectionOptions": {
+    "message": "Options"
+  },
+  "blurMode": {
+    "message": "Blur mode"
+  },
+  "clickReveal": {
+    "message": "Click to reveal"
+  },
+  "blockCards": {
+    "message": "Hide link cards"
+  },
+  "blockTrending": {
+    "message": "Hide trending"
+  },
+  "shortcutHint": {
+    "message": "Alt+M to quick toggle"
+  }
+}

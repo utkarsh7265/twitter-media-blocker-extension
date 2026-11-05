@@ -39,4 +39,15 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
 });
 
+// Labels come from _locales; English stays in popup.html as the fallback.
+document.querySelectorAll('[data-i18n]').forEach(el => {
+  const msg = chrome.i18n.getMessage(el.dataset.i18n);
+  if (!msg) return;
+  const kbd = el.querySelector('kbd');
+  if (!kbd) { el.textContent = msg; return; }
+  // Keep the <kbd> styling wherever the translation puts the shortcut
+  const [before, after = ''] = msg.split(kbd.textContent);
+  el.replaceChildren(before, kbd, after);
+});
+
 loadUI();

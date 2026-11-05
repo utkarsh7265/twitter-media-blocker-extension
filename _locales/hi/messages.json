@@ -1,0 +1,38 @@
+{
+  "extDescription": {
+    "message": "X/Twitter पर इमेज और वीडियो छिपाएँ या धुंधला करें। ट्रेंडिंग साइडबार ब्लॉक करें। Alt+M से चालू/बंद करें।"
+  },
+  "commandToggleAll": {
+    "message": "सारी मीडिया ब्लॉकिंग चालू/बंद करें"
+  },
+  "sectionMedia": {
+    "message": "मीडिया"
+  },
+  "blockImages": {
+    "message": "इमेज ब्लॉक करें"
+  },
+  "blockVideos": {
+    "message": "वीडियो ब्लॉक करें"
+  },
+  "keepAvatars": {
+    "message": "प्रोफ़ाइल फ़ोटो दिखाएँ"
+  },
+  "sectionOptions": {
+    "message": "विकल्प"
+  },
+  "blurMode": {
+    "message": "धुंधला मोड"
+  },
+  "clickReveal": {
+    "message": "क्लिक करके दिखाएँ"
+  },
+  "blockCards": {
+    "message": "लिंक कार्ड छिपाएँ"
+  },
+  "blockTrending": {
+    "message": "ट्रेंडिंग छिपाएँ"
+  },
+  "shortcutHint": {
+    "message": "जल्दी चालू/बंद करने के लिए Alt+M"
+  }
+}

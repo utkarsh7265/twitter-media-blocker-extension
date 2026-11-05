@@ -6,6 +6,8 @@
 A simple browser extension that hides images and videos on Twitter (X) so you can scroll without distractions.  
 It’s lightweight, private, and helps you focus on what people actually write.
 
+![Demo: a post's image shown normally, then hidden, then blurred](docs/demo.gif)
+
 [**✅ Install from Chrome Web Store**](https://chromewebstore.google.com/detail/twitter-media-blocker/lefnkfngfacicegokkakkbflpbklnipk)
 
 ---
